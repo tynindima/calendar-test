@@ -1,10 +1,16 @@
 import React, { FC } from 'react';
 import { Form, Input, Button } from 'antd';
 import { rules } from '../utils/rules';
+import { useTypedSelector } from '../hooks/useTypedSelector';
+import { useActions } from '../hooks/useActions';
 
 const LoginForm: FC = () => {
+  const { login } = useActions();
+  const { isLoading, error } = useTypedSelector(store => store.auth)
+
   const onFinish = (values: any) => {
     console.log('Success:', values);
+    login(values.username, values.password);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -21,6 +27,9 @@ const LoginForm: FC = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
+      {error && <div style={{ color: 'red' }}>
+        {error}
+      </div>}
       <Form.Item
         label="Username"
         name="username"
@@ -36,7 +45,7 @@ const LoginForm: FC = () => {
         <Input.Password />
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={isLoading}>
           Submit
         </Button>
       </Form.Item>
