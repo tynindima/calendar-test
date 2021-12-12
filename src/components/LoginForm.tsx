@@ -9,7 +9,6 @@ const LoginForm: FC = () => {
   const { isLoading, error } = useTypedSelector(store => store.auth)
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
     login(values.username, values.password);
   };
 
