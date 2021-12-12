@@ -11,10 +11,6 @@ interface EventFormProps {
 const EventForm: FC<EventFormProps> = ({ guests, onCancel }) => {
   const [date, setDate] = useState('');
 
-  const handlerDatePicker = (date: any, dateString: string) => {
-    setDate(dateString);
-  };
-
   const onFinish = (values: any) => {
     console.log('event values > ', values);
     console.log('date > ', values.date.format("DD.MM.YYYY"));
@@ -43,7 +39,7 @@ const EventForm: FC<EventFormProps> = ({ guests, onCancel }) => {
         name="date"
         rules={[rules.required()]}
       >
-        <DatePicker onChange={handlerDatePicker} /> 
+        <DatePicker /> 
       </Form.Item>
       <Form.Item
         label="Guest"
