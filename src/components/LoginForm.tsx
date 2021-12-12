@@ -12,10 +12,6 @@ const LoginForm: FC = () => {
     login(values.username, values.password);
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
-
   return (
     <Form
       name="basic"
@@ -23,7 +19,6 @@ const LoginForm: FC = () => {
       wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
       {error && <div style={{ color: 'red' }}>

@@ -4,23 +4,31 @@ import EventCalendar from '../components/EventCalendar';
 import EventForm from '../components/EventForm';
 import { useActions } from '../hooks/useActions';
 import { useTypedSelector } from '../hooks/useTypedSelector';
+import { IEvent } from '../models/IEvent';
 
 const Event: FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { fetchGuests } = useActions();
-  const { guests } = useTypedSelector(state => state.event);
+  const { fetchGuests, fetchEvents, createEvent } = useActions();
+  const { guests, events } = useTypedSelector(state => state.event);
+  const { user } = useTypedSelector(state => state.auth);
 
   useEffect(() => {
-    fetchGuests();    
+    fetchGuests();
+    fetchEvents(user.username);
   }, []);
 
   const handleCancel = () => {
     setIsModalVisible(false)
   };
 
+  const handlerSubmitEventForm = (event: IEvent) => {
+    createEvent(event); 
+    handleCancel();
+  };
+
   return (
     <div>
-      <EventCalendar event={{}} />
+      <EventCalendar events={events} />
       <Row justify="center">
         <Button onClick={() => setIsModalVisible(true)}>Add event</Button>
       </Row>
@@ -30,7 +38,8 @@ const Event: FC = () => {
         onCancel={handleCancel}
         footer={null}
       >
-        <EventForm guests={guests} onCancel={handleCancel} />
+        <EventForm guests={guests} onSubmit={handlerSubmitEventForm} 
+        />
       </Modal>
     </div>
   )

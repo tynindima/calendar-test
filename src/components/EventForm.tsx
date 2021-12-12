@@ -1,30 +1,41 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Button, DatePicker, Form, Input, Row, Select } from 'antd';
+import { useTypedSelector } from './../hooks/useTypedSelector';
 import { rules } from '../utils/rules';
 import { IUser } from './../models/IUser';
+import { IEvent } from '../models/IEvent';
+import { formatDate } from '../utils/formatDate';
 
 interface EventFormProps {
   guests: IUser[],
-  onCancel: () => void,
+  onSubmit: (event: IEvent) => void,
 };
 
-const EventForm: FC<EventFormProps> = ({ guests, onCancel }) => {
-  const [date, setDate] = useState('');
+const EventForm: FC<EventFormProps> = ({ guests, onSubmit }) => {
+  const [form] = Form.useForm();
+  const { user } = useTypedSelector(state => state.auth);
 
   const onFinish = (values: any) => {
-    console.log('event values > ', values);
-    console.log('date > ', values.date.format("DD.MM.YYYY"));
-    onCancel();
+    const validDate = formatDate(values.date);
+    const event = {
+      ...values,
+      author: user.username,
+      date: validDate,
+    };
+
+    onSubmit(event);
+    form.resetFields();
+   
   };
 
   return (
     <Form
+      form={form}
       name="eventForm"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
       onFinish={onFinish}
-      // onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
       <Form.Item
@@ -37,7 +48,7 @@ const EventForm: FC<EventFormProps> = ({ guests, onCancel }) => {
       <Form.Item
         label="Event date"
         name="date"
-        rules={[rules.required()]}
+        rules={[rules.required(), rules.idDateAfter('Date must be after past')]}
       >
         <DatePicker /> 
       </Form.Item>
